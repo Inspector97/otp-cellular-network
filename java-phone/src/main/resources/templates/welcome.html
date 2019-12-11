@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cell phone</title>
+
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">Cell phone</a>
+</nav>
+
+<main role="main" class="container" style="margin-left: 0; margin-right: 0">
+    <div style="margin-bottom: 10px">
+        <button type="button" class="btn btn-secondary" onclick="sendMessage()">Отправить сообщение</button>
+    </div>
+    <div class="wrapper">
+        <div id="messages" class="box"></div>
+    </div>
+
+</main>
+<!-- /.container -->
+<script th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
+<script type="text/javascript" th:src="@{webjars/bootstrap/4.2.1/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/script.js}"></script>
+
+</body>
+</html>
