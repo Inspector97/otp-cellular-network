@@ -1,0 +1,16 @@
+// https://github.com/ccrusius/gradle-erlang-plugin
+plugins {
+    id "org.ccrusius.erlang" version "2.0.8"
+}
+
+import org.ccrusius.erlang.tasks.Application
+
+task buildErlang(type: Application) {
+    baseDir '.'
+    addCompilerOpts('-Werror')
+}
+
+ext {
+//    Раскомментировать, если необходимо указать путь до erlang
+//    erlangRoot = '/opt/erlang/r16b03-1'
+}

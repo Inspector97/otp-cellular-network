@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="start erlang" type="ErlangConsoleRunConfigurationType" factoryName="Erlang Console" show_console_on_std_err="false" show_console_on_std_out="false">
+    <module name="erlang-network" />
+    <option name="allowRunningInParallel" value="false" />
+    <option name="consoleArgs" value="-sname sh1" />
+    <option name="workingDirPath" value="E:\GitHub\otp-cellular-network\erlang-network\build\erlang\lib\erlang_network-1.0\ebin" />
+    <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="buildErlang" externalProjectPath="$PROJECT_DIR$/erlang-network" vmOptions="" scriptParameters="" />
+    </method>
+  </configuration>
+</component>
