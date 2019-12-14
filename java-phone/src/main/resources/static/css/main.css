@@ -17,7 +17,7 @@ h2 {
 
 .wrapper {
     display: grid;
-    grid-template-columns: 23% 23% 23% 23% 23% 23%;
+    grid-template-columns: 30% 30% 40%;
     grid-gap: 10px;
     background-color: #fff;
     color: #444;

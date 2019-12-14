@@ -20,6 +20,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://clojars.org/repo/"
+    }
 }
 
 dependencies {
@@ -34,9 +37,15 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
-    implementation 'org.erlang.otp:jinterface:1.5.3.1'
+//    implementation 'org.erlang.otp:jinterface:1.5.3.1'
+    implementation 'clojang:erlang-jinterface:1.10-1'
+//    implementation 'org.erlang.otp:jinterface:1.6.1'
 }
 
 test {
     useJUnitPlatform()
+}
+
+bootRun {
+    systemProperty "phone.number", System.getProperty("phone.number")
 }

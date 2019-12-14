@@ -3,9 +3,9 @@
     <module name="erlang-network" />
     <option name="allowRunningInParallel" value="false" />
     <option name="consoleArgs" value="-sname sh1" />
-    <option name="workingDirPath" value="E:\GitHub\otp-cellular-network\erlang-network\build\erlang\lib\erlang_network-1.0\ebin" />
+    <option name="workingDirPath" value="E:\GitHub\otp-cellular-network\erlang-network\src" />
     <method v="2">
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="buildErlang" externalProjectPath="$PROJECT_DIR$/erlang-network" vmOptions="" scriptParameters="" />
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_erlc all" />
     </method>
   </configuration>
 </component>

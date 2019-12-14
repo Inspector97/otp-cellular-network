@@ -5,8 +5,10 @@ function poll() {
 }
 
 function ready() {
-    setInterval(poll, 250)
-
+    setInterval(poll, 250);
+    $.get("/getPhoneNumber", {}, function (data) {
+        $("#phoneNumber").html("Phone number: " + data);
+    });
 }
 
 function sendMessage() {
