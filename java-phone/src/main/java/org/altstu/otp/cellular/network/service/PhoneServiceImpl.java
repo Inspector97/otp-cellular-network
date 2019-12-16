@@ -2,27 +2,50 @@ package org.altstu.otp.cellular.network.service;
 
 import com.ericsson.otp.erlang.*;
 import lombok.RequiredArgsConstructor;
+import org.altstu.otp.cellular.network.MessageListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class PhoneServiceImpl implements PhoneService {
-    private final Pinger pinger;
+public class PhoneServiceImpl implements PhoneService, MessageListener.CallbackMessage {
+
+    @Value("${phone.network.rpc-server}")
+    String SERVER_NODE_NAME;
+
+    @Autowired
+    private Pinger pinger;
     private String phoneNumber;
     private OtpMbox otpMbox;
     private OtpErlangPid pid;
     private OtpConnection conn;
+    private MessageListener messageListener;
+    private List<String> messages;
+
+    private OtpSelf client;
+    private OtpPeer peer;
 
     @PostConstruct
-    private void initPhoneService() throws IOException, OtpAuthException {
-        OtpSelf client = new OtpSelf(getPhoneNumber());
-        OtpPeer peer = new OtpPeer("sh1");
+    private void initPhoneService() throws Exception {
+        client = new OtpSelf(getPhoneNumber(), "phone");
+        peer = new OtpPeer(SERVER_NODE_NAME);
         conn = client.connect(peer);
+
+        register(getPhoneNumber());
+
+        messages = new ArrayList<>();
+
+        messageListener = new MessageListener();
+        messageListener.registerCallback(this, conn);
+        messageListener.start();
     }
 
     @Override
@@ -34,12 +57,27 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
+    public void register(String number) throws Exception {
+        pinger.sendMessage(conn, "register", new OtpErlangList(new OtpErlangObject[]{
+                client.pid(), // pid
+                new OtpErlangString(number),  // phone number
+        }
+        ));
+    }
+
+    @Override
     public void sendMessage(String number, String message) throws Exception {
-        pinger.sendMessage(conn, new OtpErlangTuple(new OtpErlangObject[]{
-                new OtpErlangString(number),
+        pinger.sendMessage(conn, "sms", new OtpErlangList(new OtpErlangObject[]{
+                new OtpErlangString(phoneNumber), // from
+                new OtpErlangString(number),      // to
                 new OtpErlangString(message),
         }
         ));
+    }
+
+    @Override
+    public List<String> getMessages() {
+        return messages;
     }
 
     private String generateNumber() {
@@ -50,5 +88,11 @@ public class PhoneServiceImpl implements PhoneService {
             stringBuilder.append((char) (random.nextInt(10) + '0'));
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void callback(String message) {
+        messages.add(message);
+        System.out.println(message);
     }
 }
