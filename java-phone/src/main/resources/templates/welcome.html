@@ -18,17 +18,17 @@
 </nav>
 
 <main role="main" class="container" style="margin-left: 0; margin-right: 0">
-    <div style="margin-bottom: 10px">
-        <button type="button" class="btn btn-secondary" onclick="sendMessage()">Отправить сообщение</button>
-    </div>
-    <div class="wrapper">
-        <div id="phoneNumber" class="box"></div>
-    </div>
-    <p><h1>Сообщения</h1></p>
-    <div class="wrapper">
-        <div id="messages" class="box"></div>
-    </div>
+    <div id="phoneNumber" class="box" style="width:500px;"></div>
 
+    <div class="input-group" style="width:500px;margin-top:20px">
+        <input type="text" class="form-control" placeholder="Номер телефона" id="input-phone" />
+        <input type="text" class="form-control" placeholder="Сообщение" id="input-message" />
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+    
+    <div id="messages" class="box" style="width:500px;margin-top:20px"></div>
 </main>
 <!-- /.container -->
 <script th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>

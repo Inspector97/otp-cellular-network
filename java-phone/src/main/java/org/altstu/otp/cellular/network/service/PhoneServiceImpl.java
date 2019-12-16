@@ -2,6 +2,7 @@ package org.altstu.otp.cellular.network.service;
 
 import com.ericsson.otp.erlang.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.altstu.otp.cellular.network.MessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,14 +17,19 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PhoneServiceImpl implements PhoneService, MessageListener.CallbackMessage {
 
     @Value("${phone.network.rpc-server}")
     String SERVER_NODE_NAME;
 
+    @Value("${phone.network.rpc-domain}")
+    String RPC_DOMAIN;
+
     @Autowired
     private Pinger pinger;
     private String phoneNumber;
+    private String stationName;
     private OtpMbox otpMbox;
     private OtpErlangPid pid;
     private OtpConnection conn;
@@ -35,11 +41,15 @@ public class PhoneServiceImpl implements PhoneService, MessageListener.CallbackM
 
     @PostConstruct
     private void initPhoneService() throws Exception {
-        client = new OtpSelf(getPhoneNumber(), "phone");
-        peer = new OtpPeer(SERVER_NODE_NAME);
+        String number = getPhoneNumber();
+        String station = getStationName();
+        log.info("number = {}, station = {}", number, station);
+        
+        client = new OtpSelf(number, "secure");
+        peer = new OtpPeer(station);
         conn = client.connect(peer);
 
-        register(getPhoneNumber());
+        register(number);
 
         messages = new ArrayList<>();
 
@@ -54,6 +64,12 @@ public class PhoneServiceImpl implements PhoneService, MessageListener.CallbackM
             phoneNumber = System.getProperty("phone.number", generateNumber());
         }
         return phoneNumber;
+    }
+    
+    private String getStationName() {
+        if(Objects.isNull(stationName))
+            stationName = System.getProperty("phone.station", SERVER_NODE_NAME) + "@" + RPC_DOMAIN;
+        return stationName;
     }
 
     @Override

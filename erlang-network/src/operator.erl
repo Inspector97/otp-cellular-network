@@ -6,41 +6,37 @@
 %%% @end
 %%% Created : 11. Дек. 2019 21:45
 %%%-------------------------------------------------------------------
--module(base_station).
+-module(operator).
 -author("artem").
 -behaviour(gen_server).
 
 -export([start_link/0, stop/0, sms/3, register/2]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
-  terminate/2, code_change/3, smsForward/3]).
+  terminate/2, code_change/3]).
 
+
+%%-record(state, {}).
 
 start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 stop() ->
-  gen_server:cast(?MODULE, stop).
+  gen_server:cast({local, ?MODULE}, stop).
 
 register(Pid, Number) ->
-  gen_server:call(?MODULE , {register, {Pid, Number}}).
+  gen_server:call({local, ?MODULE} , {register, {Pid, Number}}).
 
 sms(From, To, Message) ->
-  gen_server:call(?MODULE, {sms, {From, To, Message}}).
-
-smsForward(From, To, Message) ->
-  gen_server:call(?MODULE, {smsForward, {From, To, Message}}).
+  gen_server:call({local, ?MODULE}, {sms, {From, To, Message}}).
 
 init([]) ->
   {ok, []}.
 
-handle_call({sms, {From, To, Message}}, _From, State) ->
-  io:format("Incoming SMS: from: ~p to: ~p data: ~p~n", [From, To, Message]),
-  gen_server:call({operator, 'operator@kot-notebook'}, {sms, {From, To, Message}}),
-  
-  {reply, {oksms, {From, To, Message}}, State};
+forward(Pid, From, To, Message) ->
+  gen_server:call(Pid, {smsForward, {From, To, Message}}).
 
-handle_call({smsForward, {From, To, Message}}, _From, State) ->
-  io:format("Forwarding SMS: from: ~p to: ~p data: ~p~n", [From, To, Message]),
+handle_call({sms, {From, To, Message}}, _From, State) ->
+  io:format("SMS: from: ~p to: ~p data: ~p~n", [From, To, Message]),
 
 %%  looking for 'To' number in register state
   RetList = lists:foldl(
@@ -54,16 +50,14 @@ handle_call({smsForward, {From, To, Message}}, _From, State) ->
 %%  send for specified name and pid
   lists:foreach(
     fun(P) ->
-      P ! {oksms, {oksms, {From, To, Message}}}
+      spawn(fun() -> forward(P, From, To, Message) end)
     end,
     RetList),
 
   {reply, {oksms, {From, To, Message}}, State};
 
 handle_call({register, {Pid, Number}}, _From, State) ->
-  io:format("Client ~p connecting with pid: ~p~n", [Number, Pid]),
-  gen_server:call({operator, 'operator@kot-notebook'}, {register, {self(), Number}}),
-  
+  io:format("Client ~p connecting with base station pid:~p~n", [Number, Pid]),
   RetList = lists:foldl(
     fun({P,NameFrom}, TempList) ->
       if (Number =:= NameFrom) -> TempList;

@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="stationA" type="ErlangConsoleRunConfigurationType" factoryName="Erlang Console" show_console_on_std_err="false" show_console_on_std_out="false">
+    <option name="allowRunningInParallel" value="false" />
+    <option name="consoleArgs" value="-sname stationA -setcookie secure" />
+    <option name="workingDirPath" value="$PROJECT_DIR$/build/erlang/lib/erlang_network-1.0/ebin" />
+    <method v="2" />
+  </configuration>
+</component>

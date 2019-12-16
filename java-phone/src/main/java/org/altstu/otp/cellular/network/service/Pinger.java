@@ -15,12 +15,6 @@ public class Pinger {
     @Value("${phone.network.rpc-module}")
     String BASE_STATION;
 
-    @Value("${phone.network.rpc-server}")
-    String SERVER_NAME;
-
-    @Value("${phone.network.rpc-domain}")
-    String SERVER_DOMAIN;
-
     public void sendMessage(OtpConnection otpConnection, String proc, OtpErlangList message) throws Exception {
         otpConnection.sendRPC(BASE_STATION, proc, message);
     }
