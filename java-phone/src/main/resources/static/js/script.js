@@ -1,6 +1,7 @@
 function poll() {
     $.get("/messages", {}, function (data) {
-        $("#students").html(data);
+        $("#messages").html(data.join("<br><br>"));
+        console.log(data.join("<br>"));
     });
 }
 

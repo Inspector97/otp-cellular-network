@@ -2,6 +2,7 @@ package org.altstu.otp.cellular.network.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.altstu.otp.cellular.network.service.PhoneService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,12 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RestController
 @RequiredArgsConstructor
 public class AppController {
-    private final PhoneService phoneService;
+    @Autowired
+    private PhoneService phoneService;
     private final AtomicInteger counter = new AtomicInteger(0);
 
     @RequestMapping("/messages")
-    public List<Object> messages() {
-        return Collections.emptyList();
+    public List<String> messages() {
+        return phoneService.getMessages();
     }
 
     @RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
